@@ -1,6 +1,6 @@
 <?php
-namespace App\model\Table;
-use Cake\Database\Schema\Table;
+namespace App\Model\Table;
+use Cake\ORM\Table;
 
 class AlunosTable extends Table{
 
@@ -9,7 +9,7 @@ class AlunosTable extends Table{
      */
     public function initialize(array $config ){
 
-        $this->addBehaviuor('Timestamp');
+        $this->addBehavior('Timestamp');
         $this->displayField('nome');
     }
 
