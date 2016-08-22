@@ -1,37 +1,108 @@
 <?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link      http://cakephp.org CakePHP(tm) Project
- * @since     0.2.9
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
- */
 namespace App\Controller;
 
-use Cake\Controller\Controller;
-
+use App\Controller\AppController;
 
 /**
- * Application Controller
+ * Alunos Controller
  *
- * Add your application-wide methods in the class below, your controllers
- * will inherit them.
- *
- * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
+ * @property \App\Model\Table\AlunosTable $Alunos
  */
-class AlunosController extends AppController{
+class AlunosController extends AppController
+{
 
     /**
-     * @param array $paginate
+     * Index method
+     *
+     * @return \Cake\Network\Response|null
      */
-    public function index(){
-        $this->set('alunos',$this->paginate($this->Alunos));
+    public function index()
+    {
+        $alunos = $this->paginate($this->Alunos);
+
+        $this->set(compact('alunos'));
+        $this->set('_serialize', ['alunos']);
     }
 
+    /**
+     * View method
+     *
+     * @param string|null $id Aluno id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $aluno = $this->Alunos->get($id, [
+            'contain' => []
+        ]);
+
+        $this->set('aluno', $aluno);
+        $this->set('_serialize', ['aluno']);
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $aluno = $this->Alunos->newEntity();
+        if ($this->request->is('post')) {
+            $aluno = $this->Alunos->patchEntity($aluno, $this->request->data);
+            if ($this->Alunos->save($aluno)) {
+                $this->Flash->success(__('The aluno has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The aluno could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('aluno'));
+        $this->set('_serialize', ['aluno']);
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Aluno id.
+     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $aluno = $this->Alunos->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $aluno = $this->Alunos->patchEntity($aluno, $this->request->data);
+            if ($this->Alunos->save($aluno)) {
+                $this->Flash->success(__('The aluno has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The aluno could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('aluno'));
+        $this->set('_serialize', ['aluno']);
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Aluno id.
+     * @return \Cake\Network\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $aluno = $this->Alunos->get($id);
+        if ($this->Alunos->delete($aluno)) {
+            $this->Flash->success(__('The aluno has been deleted.'));
+        } else {
+            $this->Flash->error(__('The aluno could not be deleted. Please, try again.'));
+        }
+        return $this->redirect(['action' => 'index']);
+    }
 }

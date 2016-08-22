@@ -39,7 +39,7 @@ class CreatAlunos extends AbstractMigration
                 ->addColumn('unidade', 'string')
                 ->addColumn('url', 'string')
                 ->addColumn('created', 'datetime')
-                ->addColumn('modified', 'datetime')
+                ->addColumn('modified', 'datetime') 
                 ->save();
 
     }
